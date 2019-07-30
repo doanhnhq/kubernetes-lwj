@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  namespace: elk
+  labels:
+    app: splunk
+  name: splunk
+spec:
+  selector:
+    matchLabels:
+      app: splunk
+  template:
+    metadata:
+      labels:
+        app: splunk
+    spec:
+      containers:
+      - name: splunk
+        image: splunk/splunk:7.2
+        env:
+          - name: SPLUNK_START_ARGS
+            value: --accept-license
+          - name: SPLUNK_PASSWORD
+            value: Lwj123456@
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        - containerPort: 8088
+          protocol: TCP
+        - containerPort: 8089
+          protocol: TCP
+      

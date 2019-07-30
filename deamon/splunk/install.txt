@@ -1,0 +1,12 @@
+1) Install splunk
+2) Stop splunk service if its running
+3) Unpack crack rar to installdir\bin
+4) Start splunk service
+5) Login and install included splunk-enterprise.lic
+6) Enjoy
+
+6.4版本 (程序和转发器都要用6.4的)
+
+1、安装好
+2、将splunkd替换掉
+3、启动后注册，就没有空间限制了

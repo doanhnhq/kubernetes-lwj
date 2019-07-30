@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubesphere
+  namespace: kubesphere-system
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: ks.btclassku.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: ks-console
+          servicePort: 80

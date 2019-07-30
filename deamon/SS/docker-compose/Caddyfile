@@ -1,0 +1,44 @@
+xg.lloveu.cn {
+    gzip
+    tls a10247107@gmail.com
+    proxy /l-ray v2ray:44222 {
+        websocket
+        header_upstream -Origin
+    }
+    proxy /l-ss v2ray:44333 {
+        websocket
+        header_upstream -Origin
+    }
+    proxy /ss ss:44444 {
+        websocket
+        header_upstream -Origin
+    }
+    proxy / https://waylau.com
+        # write log to stdout for docker
+        log stdout
+        errors stdout
+}
+
+
+http://*.ngrok.llovex.com {
+    gzip
+    proxy / ngrok:80 {
+        header_upstream Host {host}
+        header_upstream X-Real-IP {remote}
+        header_upstream X-Forwarded-For {remote}
+        header_upstream X-Forwarded-Proto {scheme}
+    }
+}
+
+*.ngrok.llovex.com {
+    gzip
+    tls a10247107@gmail.com {
+        dns cloudflare
+    }
+    proxy / ngrok:80 {
+        header_upstream Host {host}
+        header_upstream X-Real-IP {remote}
+        header_upstream X-Forwarded-For {remote}
+        header_upstream X-Forwarded-Proto {scheme}
+    }
+}

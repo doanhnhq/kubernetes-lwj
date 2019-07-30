@@ -1,0 +1,47 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: exam
+  namespace: default
+  labels:
+    name: exam
+spec:
+  replicas: 3
+  template:
+    metadata:
+      name: exam
+      labels:
+        name: exam
+      annotations: 
+        ci-last-updated: '1111ss'
+    spec:
+      # nodeSelector:
+      #   app: node2
+      containers:
+      - name: exam
+        image: "justliu/exam:1.0.2"
+        ports:
+        - containerPort: 7001
+          name: web
+        # 存活探针
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /alive
+            port: 7001
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+        # 就绪探针
+        readinessProbe:
+          httpGet:
+            path: /alive
+            port: 7001
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        env:
+        - name: EGG_SERVER_ENV
+          value: "test"
+        - name: aliyun_logs_testss
+          value: "stdout"
+
+

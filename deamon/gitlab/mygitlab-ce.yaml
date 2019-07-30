@@ -1,0 +1,130 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gitlab-ce
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gitlab-ce
+    spec:
+      containers:
+      - name: gitlab-ce
+        image: gitlab/gitlab-ce:11.11.7-ce.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: GITLAB_OMNIBUS_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: gitlab-ce
+              key: gitlab_omnibus_config
+        ports:
+        - name: ssh
+          containerPort: 22
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /help
+            port: http
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /help
+            port: http
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: gitlab-etc
+          mountPath: /etc/gitlab
+        - name: gitlab-data
+          mountPath: /var/opt/gitlab
+        - name: gitlab-log
+          mountPath: /var/log/gitlab
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+      # 数据持久化存储
+      volumes:
+      - name: gitlab-etc
+        # emptyDir: {}
+        persistentVolumeClaim:
+          claimName: gitlab-ce-etc
+      - name: gitlab-data
+        # emptyDir: {}
+        persistentVolumeClaim:
+          claimName: gitlab-ce-data
+      - name: gitlab-log
+        # emptyDir: {}
+        persistentVolumeClaim:
+          claimName: gitlab-ce-log
+---
+# gitlab内部环境配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-ce
+  labels:
+    app: gitlab-ce
+data:
+  # external_url需要与ingress保持一致
+  gitlab_omnibus_config: |
+    external_url 'http://git.example.com'
+    nginx['client_max_body_size'] = '250m'
+    nginx['redirect_http_to_https'] = true
+    root_pass = '123456'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-ce
+  labels:
+    app: gitlab-ce
+spec:
+  ports:
+  #ssh端口 指定nodePort端口号
+  - name: ssh
+    port: 22
+    targetPort: ssh
+    nodePort: 30022
+  - name: http
+    port: 80
+    targetPort: http
+  - name: https
+    port: 443
+    targetPort: https
+  type: NodePort
+  selector:
+    app: gitlab-ce
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gitlab-ce
+  namespace: default
+spec:
+  rules:
+  # 域名根据需求修改
+  - host: git.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: gitlab-ce
+          servicePort: 80
+        path: /
+

@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+  authentication.conf: |-
+    [authentication]
+    authSettings = test
+    authType = LDAP
+
+    [test]
+    SSLEnabled = 0
+    anonymous_referrals = 1
+    bindDN = cn=admin,dc=example,dc=org
+    bindDNpassword = $7$6ln+dh+bapiKod4jkaQ+fDJh9lfk2EJS89R+uqdq8ViBphiTQw==
+    charset = utf8
+    emailAttribute = mail
+    groupBaseDN = ou=groups,dc=example,dc=org
+    groupMappingAttribute = cn
+    groupMemberAttribute = memberuid
+    groupNameAttribute = cn
+    host = ldap-service
+    nestedGroups = 0
+    network_timeout = 20
+    port = 389
+    realNameAttribute = cn
+    sizelimit = 1000
+    timelimit = 15
+    userBaseDN = ou=users,dc=example,dc=org
+    userNameAttribute = uid
+
+    [roleMap_test]
+    admin = aaaa
+    can_delete = aaaa
+    splunk-system-role = aaaa
+    user = aaaa;admin
+kind: ConfigMap
+metadata:
+  name: grafana-ladp-config
+  namespace: public-service

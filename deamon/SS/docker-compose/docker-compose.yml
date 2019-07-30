@@ -1,0 +1,50 @@
+version: '3'
+    
+services:
+  v2ray:
+    container_name: v2ray
+    # image: v2ray/official
+    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/wray:1.0.0
+    restart: always
+    volumes:
+    - ./config.json:/etc/v2ray/config.json
+    expose:
+    - "44222"
+    - "44333" 
+    # ports:
+    # - "44333"
+
+  ss:
+    container_name: ss
+    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/ss-libev:1.0.0
+    restart: always
+    volumes:
+    - ./ss-config.json:/etc/shadowsocks-libev/config.json
+    expose:
+    - "44444"
+ 
+  ngrok:
+    container_name: ngrok
+    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/ngrok:1.0.3
+    restart: always
+    expose:
+    - "80"
+    - "443"
+    ports:
+    - "543:4443"
+
+  caddy:
+    container_name: caddy
+    # image: abiosoft/caddy
+    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/caddy:1.0.0
+    restart: always
+    volumes:
+    - ./Caddyfile:/etc/Caddyfile:ro
+    - ./caddyCertificates:/root/.caddy
+    environment:
+    - ACME_AGREE=true
+    - CLOUDFLARE_EMAIL=a10247107@gmail.com
+    - CLOUDFLARE_API_KEY=b001150308f7679665b84672d1639dab9de49
+    ports:
+    - "80:80"
+    - "443:443"

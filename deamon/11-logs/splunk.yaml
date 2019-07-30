@@ -1,0 +1,104 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: logging
+  labels:
+    app: splunk
+  name: splunk
+spec:
+  selector:
+    matchLabels:
+      app: splunk
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        ci-last-updated: "2019-11-02 16:15:05"
+      labels:
+        app: splunk
+    spec:
+      containers:
+      - image: registry.ap-southeast-1.aliyuncs.com/jay_liu/splunk:7.2.3
+        imagePullPolicy: Always
+        name: splunk
+        # 第一次初始化pvc操作
+        # command: ['sh', '-c', 'cp -rp /opt/splunk/etc/* /datas/']
+        volumeMounts:
+        - mountPath: /opt/splunk/var
+          name: splunk-data
+        - name: splunk-etc
+          mountPath: /opt/splunk/etc
+        # 第一次初始化pvc操作
+        # - name: splunk-etc
+        #   mountPath: /datas
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        - containerPort: 7788
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "2"
+            memory: 5000Mi
+          requests:
+            cpu: "1"
+            memory: 3000Mi
+      volumes:
+      - name: splunk-data
+        persistentVolumeClaim:
+          claimName: splunk-data
+      - name: splunk-etc
+        persistentVolumeClaim:
+          claimName: splunk-etc
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: logging
+  labels:
+    app: splunk
+  name: splunk
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: management
+  - port: 7788
+    targetPort: 7788
+    name: http-event
+  selector:
+    app: splunk
+
+---
+# splunk数据存储数据PVC
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: logging
+  name: splunk-data
+spec:
+  storageClassName: alicloud-disk-bt
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+---
+# splunk配置相关PVC -- 用户名，密码，索引等相关配置
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: logging
+  name: splunk-etc
+spec:
+  storageClassName: alicloud-disk-bt
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

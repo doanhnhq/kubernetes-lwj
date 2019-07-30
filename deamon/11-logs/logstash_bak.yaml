@@ -1,0 +1,98 @@
+---
+# logstash规则文件（有不同的任务需要更改）
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: logstash-conf
+  namespace: elk
+data:
+  # 基础镜像包含/etc/java/mysql-connector-java-8.0.17.jar
+  # elasticsearch hosts 需要随着es服务更改
+  logstash.conf: |
+    input {
+      beats {
+        port => "5044"
+      }
+    }
+
+    output {
+      elasticsearch {
+        hosts => ["http://elasticsearch-api:9200"]
+        index => "logstash-htjf-filebeat"
+      }
+      stdout {
+        codec => rubydebug
+      }
+    }
+---
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  labels:
+    elastic-app: logstash
+  name: logstash
+  namespace: elk
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      elastic-app: logstash
+  template:
+    metadata:
+      labels:
+        elastic-app: logstash
+    spec:
+      containers:
+        - name: logstash
+          image: justliu/btlogstash:6.8.2
+          volumeMounts:
+            - mountPath: /usr/share/logstash/pipeline/
+              name: config-volume
+          ports:
+            - containerPort: 5044
+              name: filebeat
+            - containerPort: 9600
+              name: logstash
+          env:
+            - name: "XPACK_MONITORING_ELASTICSEARCH_URL"
+              value: "http://elasticsearch-api:9200/"
+          securityContext:
+            privileged: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: logstash-conf
+            items:
+            - key: logstash.conf
+              path: logstash.conf
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    elastic-app: logstash
+  name: logstash-service
+  namespace: elk
+spec:
+  ports:
+    - port: 9600
+      targetPort: 9600
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    elastic-app: logstash
+  name: logstash-api
+  namespace: elk
+spec:
+  ports:
+    - name: transport
+      port: 5044
+      protocol: TCP

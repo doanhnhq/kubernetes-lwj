@@ -1,0 +1,134 @@
+
+---
+# logstash规则文件（有不同的任务需要更改）
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: logstash-conf
+  namespace: elk
+data:
+  # 基础镜像包含/etc/java/mysql-connector-java-8.0.17.jar
+  # elasticsearch hosts 需要随着es服务更改
+  logstash.conf: |
+    input {
+      jdbc {
+        # jdbc驱动包位置
+        jdbc_driver_library => "/etc/java/mysql-connector-java-8.0.17.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        # myqsl数据库的连接信息
+        jdbc_connection_string => "jdbc:mysql://120.78.249.137:3306/btclass"
+        # mysql用户
+        jdbc_user => "developer"
+        # mysql密码
+        jdbc_password => "developer123456"
+        # 定时任务， 多久执行一次查询, 默认一分钟
+        schedule => "* * * * *"
+        lowercase_column_names => false
+        statement => "select id, title, thumb, updatedTime from article"
+        record_last_run => true
+        use_column_value => true
+        tracking_column => "id"
+        last_run_metadata_path => "/.article_jdbc_last_run"
+      }
+    }
+
+    filter {}
+
+    output {
+      stdout { 
+          codec => rubydebug 
+      } 
+        # 将数据输出到ElasticSearch中
+      elasticsearch {
+          # es ip加端口
+          hosts => ["http://es-api.bt-tp.group:80"]
+          # es文档索引
+          index => "btclass-article"
+          # es文档数据的id，%{id}代表的是用数据库里面记录的id作为文档的id
+          document_id => "%{id}"
+          document_type => "_doc"
+      }
+    }
+
+
+
+
+
+
+
+
+
+---
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  labels:
+    elastic-app: logstash
+  name: logstash
+  namespace: elk
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      elastic-app: logstash
+  template:
+    metadata:
+      labels:
+        elastic-app: logstash
+      annotations: 
+        ci-last-updated: '111dsss'    
+    spec:
+      containers:
+        - name: logstash
+          image: justliu/btlogstash:6.8.2
+          volumeMounts:
+            - mountPath: /usr/share/logstash/pipeline/
+              name: config-volume
+          ports:
+            - containerPort: 5044
+              name: filebeat
+            - containerPort: 9600
+              name: logstash
+          env:
+            - name: "XPACK_MONITORING_ELASTICSEARCH_URL"
+              value: "http://es-api.bt-tp.group:80/"
+          securityContext:
+            privileged: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: logstash-conf
+            items:
+            - key: logstash.conf
+              path: logstash.conf
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+          
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    elastic-app: logstash
+  name: logstash-service
+  namespace: elk
+spec:
+  ports:
+    - port: 9600
+      targetPort: 9600
+
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   labels:
+#     elastic-app: logstash
+#   name: logstash-api
+#   namespace: elk
+# spec:
+#   ports:
+#     - name: transport
+#       port: 5044
+#       protocol: TCP

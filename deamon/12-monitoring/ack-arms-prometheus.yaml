@@ -1,0 +1,170 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: '2019-11-28T11:47:25Z'
+  generateName: arms-prom-ack-arms-prometheus-854b68987f-
+  labels:
+    app: arms-prom-ack-arms-prometheus
+    chart: ack-arms-prometheus-0.1.2
+    heritage: Tiller
+    pod-template-hash: 854b68987f
+    release: arms-prom
+    releaseRevision: '1'
+  name: arms-prom-ack-arms-prometheus-854b68987f-n2cxg
+  namespace: arms-prom
+  ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: arms-prom-ack-arms-prometheus-854b68987f
+      uid: d8eb2cd6-11d4-11ea-81fc-5acc493f924c
+  resourceVersion: '20287988'
+  selfLink: >-
+    /api/v1/namespaces/arms-prom/pods/arms-prom-ack-arms-prometheus-854b68987f-n2cxg
+  uid: d8ebea9a-11d4-11ea-81fc-5acc493f924c
+spec:
+  containers:
+    - args:
+        - '--web.enable-lifecycle'
+        - '--config.file=/etc/config/prometheusDisk/prometheus.yaml'
+      image: 'registry.cn-hangzhou.aliyuncs.com/arms-docker-repo/arms-prom-server:v0.1'
+      imagePullPolicy: Always
+      name: prometheus-arms
+      ports:
+        - containerPort: 9090
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+        - mountPath: /etc/config/prometheusDisk
+          name: prom-config
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: arms-prom-operator-token-2pcc6
+          readOnly: true
+    - args:
+        - '--port=9335'
+        - '--yaml=/etc/config/prometheusDisk/prometheus.yaml'
+        - '--clusterId=__CLUSTERID__'
+        - '--pilotid=__PILOTID__'
+        - '--regionId=__REGION_ID__'
+        - '-userId=__USER_ID__'
+        - '-acm.server.prom.heartbeataddr='
+        - '-acm.server.addr='
+        - '-acm.server.tenant='
+        - '-acm.server.dataid.data='
+        - '-acm.server.group='
+      image: >-
+        registry.cn-hangzhou.aliyuncs.com/arms-docker-repo/arms-prom-operator:v0.1
+      imagePullPolicy: Always
+      name: arms-prometheus-operator
+      ports:
+        - containerPort: 9335
+          protocol: TCP
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+        - mountPath: /etc/config/prometheusDisk
+          name: prom-config
+        - mountPath: /var/run/arms-pilot
+          name: certs
+          readOnly: true
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: arms-prom-operator-token-2pcc6
+          readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: cn-zhangjiakou.172.26.193.68
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: arms-prom-operator
+  serviceAccountName: arms-prom-operator
+  terminationGracePeriodSeconds: 30
+  tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+  volumes:
+    - name: certs
+      secret:
+        defaultMode: 420
+        secretName: arms-prom-ack-arms-prometheus-cert
+    - hostPath:
+        path: /etc/config/prometheusDisk
+        type: ''
+      name: prom-config
+    - name: arms-prom-operator-token-2pcc6
+      secret:
+        defaultMode: 420
+        secretName: arms-prom-operator-token-2pcc6
+status:
+  conditions:
+    - lastTransitionTime: '2019-11-28T11:47:25Z'
+      status: 'True'
+      type: Initialized
+    - lastTransitionTime: '2019-11-28T11:47:25Z'
+      message: 'containers with unready status: [prometheus-arms]'
+      reason: ContainersNotReady
+      status: 'False'
+      type: Ready
+    - lastTransitionTime: '2019-11-28T11:47:25Z'
+      message: 'containers with unready status: [prometheus-arms]'
+      reason: ContainersNotReady
+      status: 'False'
+      type: ContainersReady
+    - lastTransitionTime: '2019-11-28T11:47:25Z'
+      status: 'True'
+      type: PodScheduled
+  containerStatuses:
+    - containerID: >-
+        docker://910b7e57bbffc5953f76ce267184e6ae7e95dec76645a41e1f318627736dd239
+      image: >-
+        registry.cn-hangzhou.aliyuncs.com/arms-docker-repo/arms-prom-operator:v0.1
+      imageID: >-
+        docker-pullable://registry.cn-hangzhou.aliyuncs.com/arms-docker-repo/arms-prom-operator@sha256:3d3e9f103466cc3aa7550975e6623894052c92e32c4f1acd0843f253155b5335
+      lastState: {}
+      name: arms-prometheus-operator
+      ready: true
+      restartCount: 0
+      state:
+        running:
+          startedAt: '2019-11-28T11:47:38Z'
+    - containerID: >-
+        docker://9cba7f57272d435a48bbc67565bf5367e29ddaa058c98a0e6f76f070ef42f4a2
+      image: 'registry.cn-hangzhou.aliyuncs.com/arms-docker-repo/arms-prom-server:v0.1'
+      imageID: >-
+        docker-pullable://registry.cn-hangzhou.aliyuncs.com/arms-docker-repo/arms-prom-server@sha256:789c81b82b2a899bfb88ef970d94c386710a8b23140a008ac284d2f059ec4fd5
+      lastState:
+        terminated:
+          containerID: >-
+            docker://9cba7f57272d435a48bbc67565bf5367e29ddaa058c98a0e6f76f070ef42f4a2
+          exitCode: 1
+          finishedAt: '2019-11-28T11:48:23Z'
+          reason: Error
+          startedAt: '2019-11-28T11:48:23Z'
+      name: prometheus-arms
+      ready: false
+      restartCount: 3
+      state:
+        waiting:
+          message: >-
+            Back-off 40s restarting failed container=prometheus-arms
+            pod=arms-prom-ack-arms-prometheus-854b68987f-n2cxg_arms-prom(d8ebea9a-11d4-11ea-81fc-5acc493f924c)
+          reason: CrashLoopBackOff
+  hostIP: 172.26.193.68
+  phase: Running
+  podIP: 172.20.0.6
+  qosClass: Burstable
+  startTime: '2019-11-28T11:47:25Z'

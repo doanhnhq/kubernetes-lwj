@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  namespace: public-service
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - mountPath: /etc/grafana/grafana.ini
+          subPath: grafana.ini
+          name: grafana-ladp-config
+        - mountPath: /etc/grafana/ldap.toml
+          subPath: ldap.toml
+          name: grafana-ladp-config
+      volumes:
+      - name: grafana-ladp-config
+        configMap:
+          name: grafana-ladp-config
+      

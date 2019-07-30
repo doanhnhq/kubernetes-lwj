@@ -1,0 +1,48 @@
+{
+    "inbounds": [
+      {
+        "listen": "0.0.0.0",
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "/l-ray"
+          },
+          "security": "auto"
+        },
+        "settings": {
+          "clients": [
+            {
+              "id": "68ab8722-b3ba-4897-89b0-a02cb480ab4e",
+              "alterId": 4
+            }
+          ]
+        },
+        "protocol": "vmess",
+        "port": 44222
+      },
+      {
+        "listen": "0.0.0.0",
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "/l-ss"
+          },
+          "security": "auto"
+        },
+        "protocol": "shadowsocks",
+        "port": 44333,
+        "settings": {
+          "method": "chacha20-ietf-poly1305",
+          "password": "Lwj123456",
+          "network": "tcp,udp"
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "direct",
+        "settings": {},
+        "protocol": "freedom"
+      }
+    ]
+  }
