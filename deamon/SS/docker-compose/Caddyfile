@@ -42,3 +42,14 @@ http://*.ngrok.llovex.com {
         header_upstream X-Forwarded-Proto {scheme}
     }
 }
+
+dropbox.llovex.com {
+    gzip
+    tls a10247107@gmail.com {
+        dns cloudflare
+    }
+    proxy / https://www.dropbox.com
+    # write log to stdout for docker
+    log stdout
+    errors stdout
+}
