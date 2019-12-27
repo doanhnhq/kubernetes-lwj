@@ -32,6 +32,18 @@ services:
     - "443"
     ports:
     - "543:4443"
+  
+  transmit:
+    container_name: transmit
+    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/transmit:1.0.0
+    restart: always
+    volumes:
+    - ./private.key:/app/app/public/private.key
+    environment:
+    - PW=x0000000l
+    - TOKEN=lW4wJ_9VV-AAAAAAAAAWPvqjtboywCnL4vjPbK0TZj4KDVaBNJzvCP0yoM0uQ3GT
+    expose:
+    - "7001"
 
   caddy:
     container_name: caddy

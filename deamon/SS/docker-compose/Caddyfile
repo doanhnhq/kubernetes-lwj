@@ -48,8 +48,10 @@ dropbox.llovex.com {
     tls a10247107@gmail.com {
         dns cloudflare
     }
-    proxy / https://www.dropbox.com
-    # write log to stdout for docker
-    log stdout
-    errors stdout
+    proxy / transmit:7001 {
+        header_upstream Host {host}
+        header_upstream X-Real-IP {remote}
+        header_upstream X-Forwarded-For {remote}
+        header_upstream X-Forwarded-Proto {scheme}
+    }
 }
