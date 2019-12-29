@@ -55,3 +55,16 @@ dropbox.llovex.com {
         header_upstream X-Forwarded-Proto {scheme}
     }
 }
+
+rclone.llovex.com {
+    gzip
+    tls a10247107@gmail.com {
+        dns cloudflare
+    }
+    proxy / nginx:80 {
+        header_upstream Host {host}
+        header_upstream X-Real-IP {remote}
+        header_upstream X-Forwarded-For {remote}
+        header_upstream X-Forwarded-Proto {scheme}
+    }
+}

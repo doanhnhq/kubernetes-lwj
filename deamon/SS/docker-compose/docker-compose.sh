@@ -3,6 +3,12 @@
 domain="xg.lloveu.cn"
 mainDomain="lloveu.com"
 
+# 挂载 onedrive
+# yum install uzip
+# yum install fuse
+# curl https://rclone.org/install.sh | bash
+# rclone mount myone:Documents ~/one --allow-other --uid 33 --gid 33 --daemon
+
 if [ ! -d ~/app ]; then 
   mkdir ~/app
 else
