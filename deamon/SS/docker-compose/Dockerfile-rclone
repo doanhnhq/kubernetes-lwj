@@ -1,5 +1,5 @@
 FROM centos:centos7
-MAINTAINER Jay <jay@loove.com>
+MAINTAINER Jay <Jay@lloveu.cn>
 
 ARG WORK_PATH=/app/
 
