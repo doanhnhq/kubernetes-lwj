@@ -1,4 +1,4 @@
-xg.lloveu.cn {
+xg.19940228.xyz {
     gzip
     tls a10247107@gmail.com
     proxy /l-ray v2ray:44222 {
@@ -20,7 +20,7 @@ xg.lloveu.cn {
 }
 
 
-http://*.ngrok.llovex.com {
+http://*.ngrok.19940228.xyz {
     gzip
     proxy / ngrok:80 {
         header_upstream Host {host}
@@ -30,7 +30,7 @@ http://*.ngrok.llovex.com {
     }
 }
 
-*.ngrok.llovex.com {
+*.ngrok.19940228.xyz {
     gzip
     tls a10247107@gmail.com {
         dns cloudflare
@@ -43,7 +43,7 @@ http://*.ngrok.llovex.com {
     }
 }
 
-dropbox.llovex.com {
+dropbox.19940228.xyz{
     gzip
     tls a10247107@gmail.com {
         dns cloudflare
@@ -56,7 +56,7 @@ dropbox.llovex.com {
     }
 }
 
-rclone.llovex.com {
+rclone.19940228.xyz {
     gzip
     tls a10247107@gmail.com {
         dns cloudflare

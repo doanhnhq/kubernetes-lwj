@@ -25,7 +25,10 @@ services:
  
   ngrok:
     container_name: ngrok
-    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/ngrok:1.0.3
+    # ngrok.llovex.com
+    # image: registry.ap-southeast-1.aliyuncs.com/jay_liu/ngrok:1.0.3
+    # ngrok.19940228.xyz
+    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/ngrok:1.0.1
     restart: always
     expose:
     - "80"

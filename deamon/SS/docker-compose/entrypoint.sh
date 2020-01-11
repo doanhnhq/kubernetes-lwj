@@ -97,6 +97,6 @@ else
   ARGS="$ARGS $NGROK_PORT"
 fi
 
-echo "SUCCESS!!! URL is https://$NGROK_SUBDOMAIN.ngrok.llovex.com  or http://$NGROK_SUBDOMAIN.ngrok.llovex.com"
+echo "SUCCESS!!! URL is https://$NGROK_SUBDOMAIN.ngrok.19940228.xyz  or http://$NGROK_SUBDOMAIN.ngrok.19940228.xyz"
 set -x
 exec $ARGS 
