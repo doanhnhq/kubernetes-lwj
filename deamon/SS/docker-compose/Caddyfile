@@ -43,18 +43,18 @@ http://*.ngrok.19940228.xyz {
     }
 }
 
-dropbox.19940228.xyz{
-    gzip
-    tls a10247107@gmail.com {
-        dns cloudflare
-    }
-    proxy / transmit:7001 {
-        header_upstream Host {host}
-        header_upstream X-Real-IP {remote}
-        header_upstream X-Forwarded-For {remote}
-        header_upstream X-Forwarded-Proto {scheme}
-    }
-}
+#dropbox.19940228.xyz{
+#    gzip
+#    tls a10247107@gmail.com {
+#        dns cloudflare
+#    }
+#    proxy / transmit:7001 {
+#        header_upstream Host {host}
+#        header_upstream X-Real-IP {remote}
+#        header_upstream X-Forwarded-For {remote}
+#        header_upstream X-Forwarded-Proto {scheme}
+#    }
+#}
 
 rclone.19940228.xyz {
     gzip

@@ -22,7 +22,9 @@ services:
     - ./ss-config.json:/etc/shadowsocks-libev/config.json
     expose:
     - "44444"
- 
+    # 配置
+    # tls=true;skip-cert-verify=true;host=xg.19940228.xyz;path=/ss
+
   ngrok:
     container_name: ngrok
     # ngrok.llovex.com
@@ -47,17 +49,17 @@ services:
     - "80"
     - "443"
 
-  transmit:
-    container_name: transmit
-    image: registry.ap-southeast-1.aliyuncs.com/jay_liu/transmit:1.0.0
-    restart: always
-    volumes:
-    - ./private.key:/app/app/public/private.key
-    environment:
-    - PW=x0000000l
-    - TOKEN=lW4wJ_9VV-AAAAAAAAAWPvqjtboywCnL4vjPbK0TZj4KDVaBNJzvCP0yoM0uQ3GT
-    expose:
-    - "7001"
+  # transmit:
+  #   container_name: transmit
+  #   image: registry.ap-southeast-1.aliyuncs.com/jay_liu/transmit:1.0.0
+  #   restart: always
+  #   volumes:
+  #   - ./private.key:/app/app/public/private.key
+  #   environment:
+  #   - PW=x0000000l
+  #   - TOKEN=lW4wJ_9VV-AAAAAAAAAWPvqjtboywCnL4vjPbK0TZj4KDVaBNJzvCP0yoM0uQ3GT
+  #   expose:
+  #   - "7001"
 
   caddy:
     container_name: caddy
