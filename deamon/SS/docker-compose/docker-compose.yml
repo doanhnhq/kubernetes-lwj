@@ -69,6 +69,7 @@ services:
     volumes:
     - ./Caddyfile:/etc/Caddyfile:ro
     - ./caddyCertificates:/root/.caddy
+    - ~/dropbox:/dropbox
     environment:
     - ACME_AGREE=true
     - CLOUDFLARE_EMAIL=a10247107@gmail.com

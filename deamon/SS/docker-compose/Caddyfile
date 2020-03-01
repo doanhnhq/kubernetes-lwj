@@ -68,3 +68,15 @@ rclone.19940228.xyz {
         header_upstream X-Forwarded-Proto {scheme}
     }
 }
+
+dropbox.19940228.xyz {
+  gzip
+  tls a10247107@gmail.com
+  # log  /var/log/caddy/dropbox.19940228.xyz.log         
+  #访问日志输出位置
+
+  #errors  /var/log/caddy/dropbox.19940228.xyz.log         
+  #错误日志输出位置
+  root /dropbox
+  browse
+}
